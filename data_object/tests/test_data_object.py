@@ -421,3 +421,17 @@ class TestDataObject(TestCase):
         # then
         self.assertIsInstance(instance, SimpleClass)
         self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+
+    def test_should_create_data_object_and_get_as_string_when_self_renamed(self):
+        # given
+        class SimpleClass(DataObject):
+            # noinspection PyMethodParameters
+            def __init__(other, foo, bar):
+                other.foo = foo
+                other.bar = bar
+
+        # when
+        instance = SimpleClass('x', 'y')
+
+        # then
+        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')

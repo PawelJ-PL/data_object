@@ -31,7 +31,7 @@ class DataObject(metaclass=ABCMeta):
     @classmethod
     def from_dict(cls, params: dict, none_if_not_found=False):
         constructor_args = deepcopy(getfullargspec(cls.__init__).args)
-        constructor_args.remove('self')
+        del constructor_args[0]
         kwargs = {}
         for arg in constructor_args:
             try:
