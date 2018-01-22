@@ -32,7 +32,7 @@ setup(
         'test': ['coverage', 'nose'],
     },
     tests_require=['nose', 'coverage'],
-    setup_requires=['setuptools_scm'],
+    setup_requires=['setuptools_scm', 'wheel'],
     python_requires='>=3',
     test_suite='nose.collector',
 )
