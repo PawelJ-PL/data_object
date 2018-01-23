@@ -455,3 +455,64 @@ class TestDataObject(TestCase):
 
         # then
         self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+
+    def test_should_copy_instance(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+        inst1 = SimpleClass('abc', 'xyz')
+
+        # when
+        inst2 = inst1.copy()
+
+        # then
+        self.assertIsInstance(inst2, SimpleClass)
+        self.assertEqual(inst1, inst2)
+
+    def test_should_copy_instance_with_all_changed_fields(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+        inst1 = SimpleClass('abc', 'xyz')
+
+        # when
+        inst2 = inst1.copy(foo='aa', bar='bb')
+
+        # then
+        self.assertIsInstance(inst2, SimpleClass)
+        self.assertEqual(str(inst2), '{"bar": "bb", "foo": "aa"}')
+
+    def test_should_copy_instance_with_some_changed_fields(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+        inst1 = SimpleClass('abc', 'xyz')
+
+        # when
+        inst2 = inst1.copy(foo='aa')
+
+        # then
+        self.assertIsInstance(inst2, SimpleClass)
+        self.assertEqual(str(inst2), '{"bar": "xyz", "foo": "aa"}')
+
+    def test_should_copy_instance_with_not_known_field_fields(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+        inst1 = SimpleClass('abc', 'xyz')
+
+        # when
+        inst2 = inst1.copy(foo='aa', zz='cc')
+
+        # then
+        self.assertIsInstance(inst2, SimpleClass)
+        self.assertEqual(str(inst2), '{"bar": "xyz", "foo": "aa"}')
+        self.assertFalse(hasattr(inst2, 'zz'))

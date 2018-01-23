@@ -43,12 +43,6 @@ print(repr(a)) # output: CustomClass(bar=b, foo=a)
 ###### Equality and Hash
 
 ```python
-
-class OtherClass(DataObject):
-    def __init__(self, foo, bar):
-        self.foo = foo
-        self.bar = bar
-
 a = CustomClass('a', 'b')
 b = CustomClass('a', 'b')
 c = CustomClass('a', 'z')
@@ -69,7 +63,7 @@ print(z) # output: {CustomClass(bar=b, foo=a), CustomClass(bar=z, foo=a)}
 ###### Creating instances from dict
 
 ```python
-class SomeClass(DataObject):
+class OtherClass(DataObject):
     def __init__(self, a, b, c='xyz'):
         self.a = a
         self.b = b
@@ -79,13 +73,27 @@ params1 = {'a': 'aaa', 'b': 'bbb', 'c': 'ccc'}
 params2 = {'a': 'xxx', 'b': 'yyy'}
 params3 = {'a': 'xxx'}
 
-inst1 = SomeClass.from_dict(params1)
-inst2 = SomeClass.from_dict(params2)
-inst3 = SomeClass.from_dict(params3, none_if_not_found=True)
+inst1 = OtherClass.from_dict(params1)
+inst2 = OtherClass.from_dict(params2)
+inst3 = OtherClass.from_dict(params3, none_if_not_found=True)
 
 print(inst1) # output: {"a": "aaa", "b": "bbb", "c": "ccc"}
 print(inst2) # output: {"a": "xxx", "b": "yyy", "c": "xyz"}
 print(inst3) # output: {"a": "xxx", "b": null, "c": "xyz"}
+```
+
+###### Copy instance (especially useful for immutable objects)
+
+```python
+primary_inst = CustomClass(foo='abc', bar='xyz')
+inst1 = primary_inst.copy()
+inst2 = primary_inst.copy(bar='aaa')
+inst3 = primary_inst.copy(bar='aaa', other='some')
+
+print(repr(primary_inst)) # output: CustomClass(bar=xyz, foo=abc)
+print(repr(inst1)) # output: CustomClass(bar=xyz, foo=abc)
+print(repr(inst2)) # output: CustomClass(bar=aaa, foo=abc)
+print(repr(inst3)) # output: CustomClass(bar=aaa, foo=abc)
 ```
 
 #### ImmutableDataObject

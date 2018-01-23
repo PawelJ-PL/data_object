@@ -49,3 +49,19 @@ class TestImmutableDataObject(TestCase):
         # then
         with self.assertRaisesRegex(TypeError, 'datetime.datetime\(2000, 10, 5, 14, 30\) is not JSON serializable'):
             self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+
+    def test_should_copy_instance_with_new_value(self):
+        # given
+        class SimpleClass(ImmutableDataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+
+        instance = SimpleClass('x', 'y')
+
+        # when
+        result = instance.copy(bar='abc')
+
+        # then
+        self.assertEqual(result.foo, 'x')
+        self.assertEqual(result.bar, 'abc')

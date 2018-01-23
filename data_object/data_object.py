@@ -48,6 +48,10 @@ class DataObject(metaclass=ABCMeta):
         # noinspection PyArgumentList
         return cls(**kwargs)
 
+    def copy(self, **attributes):
+        attrs = {**self.as_json(), **attributes}
+        return type(self).from_dict(attrs)
+
     def __str__(self) -> str:
         return dumps(self.as_json(), sort_keys=True, cls=self._json_encoder)
 
