@@ -3,7 +3,7 @@ from json import JSONEncoder
 from datetime import datetime
 from unittest import TestCase
 from data_object import DataObject
-from data_object.exceptions import ConstructorKeywordArgumentNotFound
+from data_object.exceptions import ConstructorKeywordArgumentNotFound, NoValidDataObjectException
 
 
 class TestDataObject(TestCase):
@@ -244,6 +244,26 @@ class TestDataObject(TestCase):
 
         # then
         self.assertEqual(instance2, instance1)
+
+    def test_should_raise_exception_on_equal_if_no_to_json_method(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+
+        class OtherClass:
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+
+        instance1 = SimpleClass('x', 'y')
+        instance2 = OtherClass('x', 'y')
+
+        # then
+        with self.assertRaisesRegex(NoValidDataObjectException, 'Object .* has no as_json method'):
+            # noinspection PyStatementEffect
+            instance1 == instance2
 
     def test_should_not_add_equal_values_to_set_twice_for_the_same_class(self):
         # given

@@ -8,7 +8,8 @@ from copy import deepcopy
 
 from datetime import datetime
 
-from data_object.exceptions import ConstructorKeywordArgumentNotFound, ImmutableObjectViolation
+from data_object.exceptions import ConstructorKeywordArgumentNotFound, ImmutableObjectViolation, \
+    NoValidDataObjectException
 
 
 class DataObjectJsonEncoder(JSONEncoder):
@@ -57,6 +58,8 @@ class DataObject(metaclass=ABCMeta):
         return "{0}({1})".format(self.__class__.__name__, ', '.join(pairs))
 
     def __eq__(self, o: object) -> bool:
+        if not hasattr(o, 'as_json'):
+            raise NoValidDataObjectException('Object {} has no as_json method'.format(o))
         return self.as_json() == o.as_json()
 
     def __ne__(self, o: object) -> bool:
