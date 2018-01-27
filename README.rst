@@ -50,13 +50,18 @@ Str and Repr:
 .. code:: python
 
     a = CustomClass('a', 'b')
-    print(a) # output: {"bar": "b", "foo": "a"}
+    print(a) # output: CustomClass: {"bar": b, "foo": a}
     print(repr(a)) # output: CustomClass(bar=b, foo=a)
 
 Equality and Hash
                  
 
 .. code:: python
+
+    class OtherClass(DataObject):
+        def __init__(self, foo, bar):
+            self.foo = foo
+            self.bar = bar
 
     a = CustomClass('a', 'b')
     b = CustomClass('a', 'b')
@@ -72,7 +77,7 @@ Equality and Hash
     z.add(b)
     z.add(c)
     z.add(d)
-    print(z) # output: {CustomClass(bar=b, foo=a), CustomClass(bar=z, foo=a)}
+    print(z) # output: {CustomClass(bar=z, foo=a), CustomClass(bar=b, foo=a)}
 
 Creating instances from dict
                             
@@ -93,9 +98,9 @@ Creating instances from dict
     inst2 = OtherClass.from_dict(params2)
     inst3 = OtherClass.from_dict(params3, none_if_not_found=True)
 
-    print(inst1) # output: {"a": "aaa", "b": "bbb", "c": "ccc"}
-    print(inst2) # output: {"a": "xxx", "b": "yyy", "c": "xyz"}
-    print(inst3) # output: {"a": "xxx", "b": null, "c": "xyz"}
+    print(inst1) # output: OtherClass: {"a": aaa, "b": bbb, "c": ccc}
+    print(inst2) # output: OtherClass: {"a": xxx, "b": yyy, "c": xyz}
+    print(inst3) # output: OtherClass: {"a": xxx, "b": None, "c": xyz}
 
 Copy instance (especially useful for immutable objects)
                                                        
@@ -125,7 +130,7 @@ ImmutableDataObject
             self.bar = bar
 
     inst = CustomImmutableClass('abc', 'xyz')
-    print(inst) # output: {"bar": "xyz", "foo": "abc"}
+    print(inst) # output: CustomImmutableClass: {"bar": xyz, "foo": abc}
 
     inst.foo = 'aaa'
 

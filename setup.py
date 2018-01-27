@@ -29,7 +29,7 @@ setup(
     ],
     packages=find_packages(),
     extras_require={
-        'test': ['coverage', 'nose'],
+        'test': ['coverage', 'nose', 'flake8'],
     },
     tests_require=['nose', 'coverage'],
     setup_requires=['setuptools_scm', 'wheel', 'twine'],

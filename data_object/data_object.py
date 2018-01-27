@@ -1,30 +1,14 @@
 from abc import ABCMeta
-from enum import Enum
-from json import dumps, JSONEncoder
 from functools import reduce
 from inspect import getfullargspec, signature, _empty
 
 from copy import deepcopy
 
-from datetime import datetime
-
 from data_object.exceptions import ConstructorKeywordArgumentNotFound, ImmutableObjectViolation, \
     NoValidDataObjectException
 
 
-class DataObjectJsonEncoder(JSONEncoder):
-
-    def default(self, o):
-        if isinstance(o, datetime):
-            return o.isoformat()
-        if isinstance(o, Enum):
-            return o.value
-        return JSONEncoder.default(self, o)
-
-
 class DataObject(metaclass=ABCMeta):
-
-    _json_encoder = DataObjectJsonEncoder
 
     def as_json(self):
         return {key: value for key, value in self.__dict__.items() if not key.startswith('_')}
@@ -53,13 +37,16 @@ class DataObject(metaclass=ABCMeta):
         return type(self).from_dict(attrs)
 
     def __str__(self) -> str:
-        return dumps(self.as_json(), sort_keys=True, cls=self._json_encoder)
+        attr_values = self.as_json()
+        attr_names = sorted(attr_values.keys())
+        pairs = ['"{0}": {1}'.format(attr, attr_values[attr]) for attr in attr_names]
+        return '{0}: {{{1}}}'.format(self.__class__.__name__, ', '.join(pairs))
 
     def __repr__(self) -> str:
         attr_values = self.as_json()
         attr_names = sorted(attr_values.keys())
-        pairs = ["{0}={1}".format(attr, attr_values[attr]) for attr in attr_names]
-        return "{0}({1})".format(self.__class__.__name__, ', '.join(pairs))
+        pairs = ['{0}={1}'.format(attr, attr_values[attr]) for attr in attr_names]
+        return '{0}({1})'.format(self.__class__.__name__, ', '.join(pairs))
 
     def __eq__(self, o: object) -> bool:
         if not hasattr(o, 'as_json'):
