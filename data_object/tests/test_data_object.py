@@ -1,7 +1,8 @@
+from datetime import datetime
 from enum import Enum
 from json import JSONEncoder
-from datetime import datetime
 from unittest import TestCase
+
 from data_object import DataObject
 from data_object.exceptions import ConstructorKeywordArgumentNotFound, NoValidDataObjectException
 
@@ -19,23 +20,7 @@ class TestDataObject(TestCase):
         instance = SimpleClass('x', 'y')
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
-
-    def test_should_user_custom_json_encoder(self):
-        # given
-        class SimpleClass(DataObject):
-            _json_encoder = JSONEncoder
-
-            def __init__(self, foo, bar):
-                self.foo = foo
-                self.bar = bar
-
-        # when
-        instance = SimpleClass('x', datetime(2000, 10, 5, 14, 30))
-
-        # then
-        with self.assertRaisesRegex(TypeError, 'datetime.datetime\(2000, 10, 5, 14, 30\) is not JSON serializable'):
-            self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
 
     def test_should_create_data_object_with_datetime_and_get_as_string(self):
         # given
@@ -48,7 +33,7 @@ class TestDataObject(TestCase):
         instance = SimpleClass('x', datetime(2000, 10, 5, 14, 30))
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "2000-10-05T14:30:00", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": 2000-10-05 14:30:00, "foo": x}', instance.__str__())
 
     def test_should_create_data_object_with_enum_and_get_as_string(self):
         # given
@@ -64,7 +49,7 @@ class TestDataObject(TestCase):
         instance = SimpleClass('x', SomeEnum.VAL1)
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "val1", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": SomeEnum.VAL1, "foo": x}', instance.__str__())
 
     def test_should_create_child_data_object_and_get_as_string(self):
         # given
@@ -83,7 +68,7 @@ class TestDataObject(TestCase):
         instance = ChildClass('x', 'y', 'z')
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x", "other": "z"}')
+        self.assertEqual('ChildClass: {"bar": y, "foo": x, "other": z}', instance.__str__())
 
     def test_should_create_data_object_with_method_and_get_as_string(self):
         # given
@@ -99,7 +84,7 @@ class TestDataObject(TestCase):
         instance = SimpleClass('x', 'y')
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
 
     def test_should_create_data_object_with_protected_field_and_get_as_string(self):
         # given
@@ -113,7 +98,7 @@ class TestDataObject(TestCase):
         instance = SimpleClass('x', 'y')
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
 
     def test_should_create_data_object_and_get_repr(self):
         # given
@@ -440,7 +425,7 @@ class TestDataObject(TestCase):
 
         # then
         self.assertIsInstance(instance, SimpleClass)
-        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
 
     def test_should_create_data_object_and_get_as_string_when_self_renamed(self):
         # given
@@ -454,7 +439,7 @@ class TestDataObject(TestCase):
         instance = SimpleClass('x', 'y')
 
         # then
-        self.assertEqual(instance.__str__(), '{"bar": "y", "foo": "x"}')
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
 
     def test_should_copy_instance(self):
         # given
@@ -462,6 +447,7 @@ class TestDataObject(TestCase):
             def __init__(self, foo, bar):
                 self.foo = foo
                 self.bar = bar
+
         inst1 = SimpleClass('abc', 'xyz')
 
         # when
@@ -477,6 +463,7 @@ class TestDataObject(TestCase):
             def __init__(self, foo, bar):
                 self.foo = foo
                 self.bar = bar
+
         inst1 = SimpleClass('abc', 'xyz')
 
         # when
@@ -484,7 +471,7 @@ class TestDataObject(TestCase):
 
         # then
         self.assertIsInstance(inst2, SimpleClass)
-        self.assertEqual(str(inst2), '{"bar": "bb", "foo": "aa"}')
+        self.assertEqual('SimpleClass: {"bar": bb, "foo": aa}', str(inst2))
 
     def test_should_copy_instance_with_some_changed_fields(self):
         # given
@@ -492,6 +479,7 @@ class TestDataObject(TestCase):
             def __init__(self, foo, bar):
                 self.foo = foo
                 self.bar = bar
+
         inst1 = SimpleClass('abc', 'xyz')
 
         # when
@@ -499,7 +487,7 @@ class TestDataObject(TestCase):
 
         # then
         self.assertIsInstance(inst2, SimpleClass)
-        self.assertEqual(str(inst2), '{"bar": "xyz", "foo": "aa"}')
+        self.assertEqual(str(inst2), 'SimpleClass: {"bar": xyz, "foo": aa}')
 
     def test_should_copy_instance_with_not_known_field_fields(self):
         # given
@@ -507,6 +495,7 @@ class TestDataObject(TestCase):
             def __init__(self, foo, bar):
                 self.foo = foo
                 self.bar = bar
+
         inst1 = SimpleClass('abc', 'xyz')
 
         # when
@@ -514,5 +503,5 @@ class TestDataObject(TestCase):
 
         # then
         self.assertIsInstance(inst2, SimpleClass)
-        self.assertEqual(str(inst2), '{"bar": "xyz", "foo": "aa"}')
+        self.assertEqual(str(inst2), 'SimpleClass: {"bar": xyz, "foo": aa}')
         self.assertFalse(hasattr(inst2, 'zz'))
