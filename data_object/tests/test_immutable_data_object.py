@@ -1,7 +1,4 @@
-from json import JSONEncoder
 from unittest import TestCase
-
-from datetime import datetime
 
 from data_object import ImmutableDataObject
 from data_object.exceptions import ImmutableObjectViolation

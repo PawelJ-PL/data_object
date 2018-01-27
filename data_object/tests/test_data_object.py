@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from json import JSONEncoder
 from unittest import TestCase
 
 from data_object import DataObject

@@ -1,25 +1,11 @@
 from abc import ABCMeta
-from enum import Enum
-from json import dumps, JSONEncoder
 from functools import reduce
 from inspect import getfullargspec, signature, _empty
 
 from copy import deepcopy
 
-from datetime import datetime
-
 from data_object.exceptions import ConstructorKeywordArgumentNotFound, ImmutableObjectViolation, \
     NoValidDataObjectException
-
-
-class DataObjectJsonEncoder(JSONEncoder):
-
-    def default(self, o):
-        if isinstance(o, datetime):
-            return o.isoformat()
-        if isinstance(o, Enum):
-            return o.value
-        return JSONEncoder.default(self, o)
 
 
 class DataObject(metaclass=ABCMeta):
