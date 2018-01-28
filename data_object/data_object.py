@@ -4,8 +4,7 @@ from inspect import getfullargspec, signature, _empty
 
 from copy import deepcopy
 
-from data_object.exceptions import ConstructorKeywordArgumentNotFound, ImmutableObjectViolation, \
-    NoValidDataObjectException
+from data_object.exceptions import ConstructorKeywordArgumentNotFound, ImmutableObjectViolation
 
 
 class DataObject(metaclass=ABCMeta):
@@ -50,7 +49,7 @@ class DataObject(metaclass=ABCMeta):
 
     def __eq__(self, o: object) -> bool:
         if not hasattr(o, 'as_json'):
-            raise NoValidDataObjectException('Object {} has no as_json method'.format(o))
+            return False
         return self.as_json() == o.as_json()
 
     def __ne__(self, o: object) -> bool:
@@ -58,7 +57,7 @@ class DataObject(metaclass=ABCMeta):
 
     def __hash__(self) -> int:
         attr_values = sorted("{0}:{1}".format(key, value) for key, value in self.as_json().items())
-        hashes = reduce(lambda prev, next: hash(prev) ^ hash(next), attr_values, 0)
+        hashes = reduce(lambda prev_attr, next_attr: hash(prev_attr) ^ hash(next_attr), attr_values, 0)
         return hashes
 
 

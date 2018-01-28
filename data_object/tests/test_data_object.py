@@ -3,7 +3,7 @@ from enum import Enum
 from unittest import TestCase
 
 from data_object import DataObject
-from data_object.exceptions import ConstructorKeywordArgumentNotFound, NoValidDataObjectException
+from data_object.exceptions import ConstructorKeywordArgumentNotFound
 
 
 class TestDataObject(TestCase):
@@ -245,9 +245,7 @@ class TestDataObject(TestCase):
         instance2 = OtherClass('x', 'y')
 
         # then
-        with self.assertRaisesRegex(NoValidDataObjectException, 'Object .* has no as_json method'):
-            # noinspection PyStatementEffect
-            instance1 == instance2
+        self.assertNotEqual(instance1, instance2)
 
     def test_should_not_add_equal_values_to_set_twice_for_the_same_class(self):
         # given

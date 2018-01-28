@@ -9,7 +9,3 @@ class ConstructorKeywordArgumentNotFound(DataObjectException):
 
 class ImmutableObjectViolation(DataObjectException):
     pass
-
-
-class NoValidDataObjectException(DataObjectException):
-    pass
