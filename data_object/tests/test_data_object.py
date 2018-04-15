@@ -21,6 +21,57 @@ class TestDataObject(TestCase):
         # then
         self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
 
+    def test_should_create_data_object_and_exclude_methods(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+
+            def some_method(self):
+                pass
+
+            def other_method(self):
+                pass
+
+        # when
+        instance = SimpleClass('x', 'y')
+
+        # then
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x}', instance.__str__())
+
+    def test_should_create_data_object_with_properties(self):
+        # given
+        class SimpleClass(DataObject):
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+
+            @property
+            def other(self):
+                return 'ABC'
+
+        # when
+        instance = SimpleClass('x', 'y')
+
+        # then
+        self.assertEqual('SimpleClass: {"bar": y, "foo": x, "other": ABC}', instance.__str__())
+
+    def test_should_create_data_object_with_class_member(self):
+        # given
+        class SimpleClass(DataObject):
+            class_member = 'xyz'
+
+            def __init__(self, foo, bar):
+                self.foo = foo
+                self.bar = bar
+
+        # when
+        instance = SimpleClass('x', 'y')
+
+        # then
+        self.assertEqual('SimpleClass: {"bar": y, "class_member": xyz, "foo": x}', instance.__str__())
+
     def test_should_create_data_object_with_datetime_and_get_as_string(self):
         # given
         class SimpleClass(DataObject):

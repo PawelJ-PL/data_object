@@ -1,6 +1,6 @@
 from abc import ABCMeta
 from functools import reduce
-from inspect import getfullargspec, signature, _empty
+from inspect import getfullargspec, signature, _empty, ismethod
 
 from copy import deepcopy
 
@@ -10,7 +10,9 @@ from data_object.exceptions import ConstructorKeywordArgumentNotFound, Immutable
 class DataObject(metaclass=ABCMeta):
 
     def as_json(self):
-        return {key: value for key, value in self.__dict__.items() if not key.startswith('_')}
+        members = {**self.__class__.__dict__, **self.__dict__}
+        return {key: getattr(self, key) for key in members.keys() if
+                not ismethod(getattr(self, key)) and not key.startswith('_')}
 
     @classmethod
     def from_dict(cls, params: dict, none_if_not_found=False):
