@@ -40,9 +40,15 @@ DataObject
 
 
     class CustomClass(DataObject):
+        class_member = 'XYZ'
+
         def __init__(self, foo, bar):
             self.foo = foo
             self.bar = bar
+        
+        @property
+        def other(self):
+            return 'ABC'
 
 Str and Repr:
              
@@ -50,8 +56,8 @@ Str and Repr:
 .. code:: python
 
     a = CustomClass('a', 'b')
-    print(a) # output: CustomClass: {"bar": b, "foo": a}
-    print(repr(a)) # output: CustomClass(bar=b, foo=a)
+    print(a) # output: CustomClass: {"bar": b, "class_member": XYZ, "foo": a, "other": ABC}
+    print(repr(a)) # output: CustomClass(bar=b, class_member=XYZ, foo=a, other=ABC)
 
 Equality and Hash
                  
